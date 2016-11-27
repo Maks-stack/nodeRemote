@@ -8,15 +8,11 @@
 <body>  
     <canvas id="c"></canvas>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <h2 id ="output"></h2>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-    <script>
-        var socket = io();
-
-        socket.emit('test',{
-            args: 1
-        });
-    </script>
+    
+    <!-- my classes -->
+    <script src = "js/playerClass.js"></script>
 
     <script>
         var FPS = 30
@@ -25,6 +21,9 @@
         var CANVAS_WIDTH = 0;
         var CANVAS_HEIGHT = 0;
 
+        var output = document.getElementById("output");
+        var x;
+        var y;
         setWindow();
  
         function setWindow(){
@@ -32,8 +31,8 @@
             CANVAS_HEIGHT = window.innerHeight;
             canvas.width = CANVAS_WIDTH;
             canvas.height = CANVAS_HEIGHT; 
-            ctx.fillStyle = "#FF0000";
-            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#FFF";
+            ctx.fillRect(0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
         }
 
         window.onresize = function(event) {
@@ -41,37 +40,73 @@
         };
 
         var isMobile = {
-    Android: function() {
-        return navigator.userAgent.match(/Android/i);
-    },
-    BlackBerry: function() {
-        return navigator.userAgent.match(/BlackBerry/i);
-    },
-    iOS: function() {
-        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-    },
-    Opera: function() {
-        return navigator.userAgent.match(/Opera Mini/i);
-    },
-    Windows: function() {
-        return navigator.userAgent.match(/IEMobile/i);
-    },
-    any: function() {
-        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-    }
-};
+            Android: function() {
+                return navigator.userAgent.match(/Android/i);
+            },
+            BlackBerry: function() {
+                return navigator.userAgent.match(/BlackBerry/i);
+            },
+            iOS: function() {
+                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+            },
+            Opera: function() {
+                return navigator.userAgent.match(/Opera Mini/i);
+            },
+            Windows: function() {
+                return navigator.userAgent.match(/IEMobile/i);
+            },
+            any: function() {
+                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+            }
+        };
+
+        var socket = io();
+
+        var player = new Player();
+
+        function updatePositions(posX, posY){
+            socket.emit('update-position-device', {
+                posX : posX,
+                posY : posY
+            });
+        } 
+
         if(isMobile.any())
         {
-            window.alert("Mobile");
+            socket.emit('mobile-connection',{
+                args: 1
+            });
+
+            window.addEventListener('deviceorientation', function(eventData){
+                x = eventData.gamma * 10;
+                y = eventData.beta * 10;
+
+                updatePositions(x,y);
+                output.innerHTML = x;
+            });
         }
-        /*
         else
-        {       
-            ctx.fillStyle = "#13FFE2";
-            ctx.fillRect(CANVAS_WIDTH/2, CANVAS_HEIGHT/2, 10, 10);
+        {    
+            socket.emit('desktop-connection');
         }
-        */
-        
+
+        socket.on('update-position-server', function(response){
+            x = response.x;
+            y = response.y;
+        });
+
+        setInterval(function() {
+            ctx.clearRect(0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            player.Update(x,y);
+        }, 30);
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
