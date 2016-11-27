@@ -4,9 +4,6 @@ var app = express();
 var server =  http .createServer(app);
 var PORT = process.env.PORT || 2000;
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
-});
 app.use('/', express.static(__dirname));
 
 server.listen(PORT);
