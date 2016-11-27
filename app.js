@@ -4,6 +4,10 @@ var app = express();
 var server =  http .createServer(app);
 var PORT = process.env.PORT || 2000;
 
+app.get('/', function(req, res){
+    console.log("Max Crashes");
+    res.sendFile(__dirname + '/index.html');
+});
 app.use('/', express.static(__dirname));
 
 server.listen(PORT);
@@ -17,4 +21,4 @@ io.sockets.on('connection', function(socket){
     socket.on('test', function(response){
         console.log('test' + response.args);
     });
-});  
+});
