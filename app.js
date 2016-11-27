@@ -26,6 +26,7 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('update-position-device', function(response){
-        desktopSocket.emit('update-position-server', {x: response.posX, y: response.posY})
+        if(desktopSocket)
+            desktopSocket.emit('update-position-server', {x: response.posX, y: response.posY})
     });
 });

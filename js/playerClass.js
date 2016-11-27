@@ -19,6 +19,8 @@ function Draw (){
     if(posY <= -CANVAS_HEIGHT/2) posY = -CANVAS_HEIGHT/2;
     if(posY >= CANVAS_HEIGHT/2) posY = CANVAS_HEIGHT/2;
     ctx.beginPath();
-    ctx.arc(canvas.width/2 + posY, canvas.height/2 + posY, 20,0,2*Math.PI);
+    ctx.arc(canvas.width/2 + posX, canvas.height/2 + posY, 20,0,2*Math.PI);
     ctx.stroke();
 }
+
+
