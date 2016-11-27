@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>  
+    <canvas id="c"></canvas>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script>
+
+    var isMobile = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i);
+        },
+        BlackBerry: function() {
+            return navigator.userAgent.match(/BlackBerry/i);
+        },
+        iOS: function() {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        Windows: function() {
+            return navigator.userAgent.match(/IEMobile/i);
+        },
+        any: function() {
+            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+        }
+    };
+
+        var socket = io();
+
+        socket.emit('test',{
+            args: 1
+        });
+    </script>
+
+    <script>
+        var FPS = 30
+        var canvas = document.getElementById("c");
+        var ctx = canvas.getContext("2d");
+        var CANVAS_WIDTH = 0;
+        var CANVAS_HEIGHT = 0;
+
+        setWindow();
+ 
+        function setWindow(){
+            CANVAS_WIDTH = window.innerWidth;
+            CANVAS_HEIGHT = window.innerHeight;
+            canvas.width = CANVAS_WIDTH;
+            canvas.height = CANVAS_HEIGHT; 
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+        }
+
+        window.onresize = function(event) {
+            setWindow();
+        };
+    </script>
+</body>
+</html>
