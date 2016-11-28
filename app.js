@@ -31,5 +31,4 @@ io.sockets.on('connection', function(socket){
         if(desktopSocket)
             desktopSocket.emit('update-position-server', {x: response.posX, y: response.posY, id: socket.id})
     });
-    socket.on('disconnect')
 });
