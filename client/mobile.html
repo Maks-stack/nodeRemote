@@ -1,1 +1,64 @@
-<h2>MOBILE</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>  
+    <canvas id="c"></canvas>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <h2 id ="output"></h2>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    
+    <!-- my classes -->
+    <script src = "js/playerClass.js"></script>
+    <script>
+        var socket = io();
+        socket.emit('mobile-connection');
+
+        var canvas = document.getElementById("c");
+        var ctx = canvas.getContext("2d");
+        var CANVAS_WIDTH = 0;
+        var CANVAS_HEIGHT = 0;
+
+        var output = document.getElementById("output");
+        var x;
+        var y;
+        setWindow();
+ 
+        function setWindow(){
+            CANVAS_WIDTH = window.innerWidth;
+            CANVAS_HEIGHT = window.innerHeight;
+            canvas.width = CANVAS_WIDTH;
+            canvas.height = CANVAS_HEIGHT; 
+            ctx.fillStyle = "#FFF";
+            ctx.fillRect(0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        }
+
+        window.onresize = function(event) {
+            setWindow();
+        };
+        function updatePositions(posX, posY){
+            socket.emit('update-position-device', {
+                posX : posX,
+                posY : posY
+            });
+        } 
+        window.addEventListener('deviceorientation', function(eventData){
+            x = eventData.gamma * 10;
+            y = eventData.beta * 10;
+
+            updatePositions(x,y);
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

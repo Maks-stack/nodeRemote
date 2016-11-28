@@ -29,7 +29,7 @@
         };
         if(isMobile.any())
         {
-            //window.location.replace("client/mobile.html");
+            window.location.replace("client/mobile.html");
         }
     </script>
     <canvas id="c"></canvas>
@@ -40,6 +40,9 @@
     <!-- my classes -->
     <script src = "js/playerClass.js"></script>
     <script>
+        var socket = io();
+        socket.emit('desktop-connection');
+
         var FPS = 30
         var canvas = document.getElementById("c");
         var ctx = canvas.getContext("2d");
@@ -56,60 +59,42 @@
             CANVAS_HEIGHT = window.innerHeight;
             canvas.width = CANVAS_WIDTH;
             canvas.height = CANVAS_HEIGHT; 
-            ctx.fillStyle = "#FFF";
+            //ctx.fillStyle = "#FFF";
             ctx.fillRect(0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
         }
+
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#FF694B';
+        ctx.fillStyle = '#FF694B';
 
         window.onresize = function(event) {
             setWindow();
         };
 
-        var socket = io();
-
         var players = {};
-        if(!isMobile.any())
-        {
-            player = new Player();
-        }
-        function updatePositions(posX, posY){
-            socket.emit('update-position-device', {
-                posX : posX,
-                posY : posY
-            });
-        } 
 
-        if(isMobile.any())
-        {
-            socket.emit('mobile-connection',{
-
-            });
-
-            window.addEventListener('deviceorientation', function(eventData){
-                x = eventData.gamma * 10;
-                y = eventData.beta * 10;
-
-                updatePositions(x,y);
-            });
-        }
-        else
-        {    
-            socket.emit('desktop-connection');
-        }
-
-        socket.on('update-position-server', function(response){
-            x = response.x;
-            y = response.y;
+        socket.on('player-connect', function(response){
+            players[response.id] = new Player();
         });
 
-        if(!isMobile.any())
-        {
-            setInterval(function() {
-                ctx.clearRect(0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                player.Update(x,y);
-            }, 30);
-        }
+        socket.on('update-position-server', function(response){
+            if(players[response.id])
+            {
+                players[response.id].x = response.x;
+                players[response.id].y = response.y;
+                console.log(players);
+            }
+        });
 
+        setInterval(function() {
+            ctx.clearRect(0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            for(var i in players){
+                players[i].Update(players[i].x,players[i].y);
+            }
+        }, 30);
     </script>
+    <div class = "background">
+    </div>
 </body>
 </html>
 
