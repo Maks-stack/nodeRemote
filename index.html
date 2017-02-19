@@ -5,10 +5,10 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>  
-    <img id = "qrCode" src= "qrLink.png" style = "width: 100px">
+<body>
+    <img id = "qrCode" src= "/qrLink.png" style = "width: 100px">
     <script>
-    
+
     var isMobile = {
             Android: function() {
                 return navigator.userAgent.match(/Android/i);
@@ -39,7 +39,7 @@
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <h2 id ="output"></h2>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    
+
     <!-- my classes -->
     <script src = "js/playerClass.js"></script>
     <script>
@@ -59,12 +59,12 @@
 
         var output = document.getElementById("output");
         setWindow();
- 
+
         function setWindow(){
             CANVAS_WIDTH = window.innerWidth;
             CANVAS_HEIGHT = window.innerHeight;
             canvas.width = CANVAS_WIDTH;
-            canvas.height = CANVAS_HEIGHT; 
+            canvas.height = CANVAS_HEIGHT;
             //ctx.fillStyle = "#FFF";
             ctx.fillRect(0,0, CANVAS_WIDTH, CANVAS_HEIGHT);
         }
@@ -103,11 +103,3 @@
     </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
