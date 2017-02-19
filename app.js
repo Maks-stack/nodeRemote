@@ -3,9 +3,18 @@ var http = require('http');
 var app = express();
 var server =  http .createServer(app);
 var PORT = process.env.PORT || 2000;
+var qrImage = require('qr-image');
+var fs = require('fs');
+
+qrImage
+    .image("http://nodejs.org", {type: 'png', size:20})
+    .pipe(fs.createWriteStream("MyQRCode.png"));
 
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
+});
+app.get('/pong', function(req, res){
+    res.sendFile(__dirname + '/pong.html');
 });
 app.use('/', express.static(__dirname));
 
@@ -26,6 +35,14 @@ io.sockets.on('connection', function(socket){
     socket.on('desktop-connection', function(response){
         desktopSocket = socket;
         console.log("desktop connection");
+    });
+    socket.on('generate-QR', function(response, cb){
+        var imagePath = "qrLink.png";
+        fs.unlink("qrLink.png");
+        qrImage
+            .image(response.url, {type: 'png', size:20})
+            .pipe(fs.createWriteStream(imagePath));
+            cb(imagePath);
     });
     socket.on('update-position-device', function(response){
         if(desktopSocket)

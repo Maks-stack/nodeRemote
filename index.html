@@ -6,7 +6,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>  
+    <img id = "qrCode" src= "qrLink.png" style = "width: 100px">
     <script>
+    
     var isMobile = {
             Android: function() {
                 return navigator.userAgent.match(/Android/i);
@@ -30,6 +32,7 @@
         if(isMobile.any())
         {
             window.location.replace("client/mobile.html");
+        }else{
         }
     </script>
     <canvas id="c"></canvas>
@@ -42,6 +45,11 @@
     <script>
         var socket = io();
         socket.emit('desktop-connection');
+        var cb = function(imgPath){
+            var img = document.createElement('img');
+            img.src = imgPath;
+        }
+        socket.emit('generate-QR', {url: window.location.href}, cb);
 
         var FPS = 30
         var canvas = document.getElementById("c");
@@ -50,8 +58,6 @@
         var CANVAS_HEIGHT = 0;
 
         var output = document.getElementById("output");
-        var x;
-        var y;
         setWindow();
  
         function setWindow(){
